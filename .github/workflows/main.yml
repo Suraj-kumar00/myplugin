@@ -1,47 +1,34 @@
-name: CI
+name: Build and push the Docker image
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
+      - build_action
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        ref: main
-        token: ${{ secrets.GH_PATH }}
+    - uses: actions/checkout@v3
 
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v2
+    - name: Set timestamp as environment variable
+      run: echo "TAG=$(date +%Y-%m-%d-%H%M%S)" >> $GITHUB_ENV
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      uses: docker/setup-buildx-action@v3
 
-    - name: Login to Docker Hub
-      uses: docker/login-action@v2
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
       with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-    - name: Get Date
-      id: get_date
-      run: |
-        sudo ln -sf /usr/share/zoneinfo/Asia/Kolkata /etc/localtime
-        CURRENT_TIME=$(date +'%Y-%m-%d-%H%M%S')
-        
-        echo "TIME=$CURRENT_TIME" >> $GITHUB_ENV
-        echo "TIME=$CURRENT_TIME" >> $GITHUB_OUTPUT
-
-    - name: Build and push to Docker Hub
-      run: |
-        # Replace colons in the timestamp with dashes
-        TIMESTAMP=${{ steps.get_date.outputs.TIME//:/- }}
-        docker buildx create --use
-        docker buildx build --platform linux/amd64,linux/arm64 -t surajk00/myplugin:$TIMESTAMP .
-        docker push surajk00/myplugin:$TIMESTAMP
+    - name: Build and push the Docker image
+      uses: docker/build-push-action@v2
+      with:ansahmohammad
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: surajk00/myplugin:${{ env.TAG }}
