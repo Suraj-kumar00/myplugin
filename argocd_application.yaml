@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: myplugin-app
+  namespace: portal
+spec:
+  destination:
+    namespace: portal
+    server: 'https://kubernetes.default.svc'
+  project: default
+  source:
+    path: .
+    repoURL: 'https://github.com/your-username/myplugin.git'
+    targetRevision: main
+  syncPolicy:
+    automated: {}
