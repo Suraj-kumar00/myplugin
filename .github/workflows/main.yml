@@ -21,5 +21,7 @@ jobs:
         TIMESTAMP: ${{ github.event.head_commit.timestamp }}
       run: |
         docker buildx create --use
-        docker buildx build --platform linux/amd64,linux/arm64 -t surajk00/myplugin:${{ env.TIMESTAMP }} .
-        docker push surajk00/myplugin:${{ env.TIMESTAMP }}
+        # Replace colons in the timestamp with dashes
+        TIMESTAMP=${TIMESTAMP//:/-}
+        docker buildx build --platform linux/amd64,linux/arm64 -t surajk00/myplugin:$TIMESTAMP .
+        docker push surajk00/myplugin:$TIMESTAMP
