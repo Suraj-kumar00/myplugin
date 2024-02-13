@@ -1,6 +1,6 @@
 # MyPlugin an NGINX web service
 
-![](./Image/NGINX_Banner.png)
+![](./Image/Cloudforet%20-%20Myplugin%20an%20nginx%20web%20server.png)
 ## Introduction
 MyPlugin is a Dockerized Nginx server that provides an easy and efficient way for deployment, development, and testing. It is designed to be lightweight and straightforward to use, making it ideal for both beginners and experienced users.
 
